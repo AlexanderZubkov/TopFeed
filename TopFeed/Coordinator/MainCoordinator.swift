@@ -19,9 +19,13 @@ class MainCoordinator: Coordinator {
         guard let navigationController = navigationController else { return }
         
         let mainControllerViewModel = MainViewControllerViewModel()
-        let mainVC = MainViewController.instance()
-        mainVC.viewModel = mainControllerViewModel
 
-        navigationController.pushViewController(mainVC, animated: true)
+        let identifier = String(describing: MainViewController.self)
+        let storyboard = UIStoryboard(name: identifier, bundle: nil)
+        let vc = storyboard.instantiateViewController(identifier: identifier, creator: { coder in
+            MainViewController(coder: coder, viewModel: mainControllerViewModel)
+        })
+
+        navigationController.pushViewController(vc, animated: true)
     }
 }

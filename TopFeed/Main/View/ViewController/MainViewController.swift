@@ -12,16 +12,25 @@ class MainViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
 
-    var viewModel: MainViewControllerViewModel?
+    let viewModel: MainViewControllerViewModel
     private lazy var refreshControl = UIRefreshControl()
     private var currentNumberOfRows = 0
+
+    init?(coder: NSCoder, viewModel: MainViewControllerViewModel) {
+        self.viewModel = viewModel
+        super.init(coder: coder)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("This view controller should be created with a viewModel.")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         prepareUI()
-        viewModel?.delegate = self
-        viewModel?.reloadPosts()
+        viewModel.delegate = self
+        viewModel.reloadPosts()
     }
 
     private func prepareUI() {
@@ -33,22 +42,21 @@ class MainViewController: UIViewController {
     }
 
     @objc func refresh(_ sender: AnyObject) {
-        viewModel?.reloadPosts()
+        viewModel.reloadPosts()
     }
 }
 
 //MARK: - UITableViewDataSource
 extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        viewModel?.posts.count ?? 0
+        viewModel.posts.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: MainTableViewCell = tableView.dequeueCell(at: indexPath)
         cell.selectionStyle = .none
-        if let cellViewModel = viewModel?.viewModelForCell(at: indexPath.row) {
-            cell.configure(with: cellViewModel, delegate: self)
-        }
+        let cellViewModel = viewModel.viewModelForCell(at: indexPath.row)
+        cell.configure(with: cellViewModel, delegate: self)
         return cell
     }
 }
@@ -56,15 +64,14 @@ extension MainViewController: UITableViewDataSource {
 //MARK: - UITableViewDelegate
 extension MainViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        viewModel?.heightForRow(at: indexPath.row, for: UIScreen.main.bounds.width) ?? 0
+        viewModel.heightForRow(at: indexPath.row, for: UIScreen.main.bounds.width)
     }
 }
 
 //MARK: - UITableViewDataSourcePrefetching
 extension MainViewController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        guard let viewModel = viewModel,
-              indexPaths.contains(where: { $0.row > (viewModel.posts.count - 5) }) else {
+        guard indexPaths.contains(where: { $0.row > (viewModel.posts.count - 5) }) else {
             return
         }
 
@@ -75,7 +82,7 @@ extension MainViewController: UITableViewDataSourcePrefetching {
 //MARK: - MainViewControllerViewModelDelegate
 extension MainViewController: MainViewControllerViewModelDelegate {
     func postsReloaded() {
-        currentNumberOfRows = viewModel?.posts.count ?? 0
+        currentNumberOfRows = viewModel.posts.count
         DispatchQueue.main.async {
             self.refreshControl.endRefreshing()
             self.tableView.reloadData()
@@ -83,10 +90,7 @@ extension MainViewController: MainViewControllerViewModelDelegate {
     }
 
     func addedPosts() {
-        guard let newRowsNumber = viewModel?.posts.count else {
-            return
-        }
-
+        let newRowsNumber = viewModel.posts.count
         let difference = newRowsNumber - currentNumberOfRows
         guard difference > 0 else {
             return
@@ -102,7 +106,7 @@ extension MainViewController: MainViewControllerViewModelDelegate {
             self.tableView.performBatchUpdates({
                 self.tableView.insertRows(at: array, with: .automatic)
             }) { (success) in
-                self.currentNumberOfRows = self.viewModel?.posts.count ?? 0
+                self.currentNumberOfRows = self.viewModel.posts.count
             }
         }
     }
@@ -117,7 +121,7 @@ extension MainViewController: MainTableViewCellDelegate {
     func loadAction(with imageURL: URL, and externalURL: URL) {
         let action = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         action.addAction(UIAlertAction(title: Constants.Main.saveToPhotos, style: .default, handler: { (_) in
-            self.viewModel?.saveImage(with: imageURL, completion: { (data) in
+            self.viewModel.saveImage(with: imageURL, completion: { (data) in
                 guard let data = data,
                       let image = UIImage(data: data) else {
                     return
