@@ -42,10 +42,6 @@ extension MainViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         viewModel?.posts.count ?? 0
     }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        viewModel?.heightForRow(at: indexPath.row, for: UIScreen.main.bounds.width) ?? 0
-    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: MainTableViewCell = tableView.dequeueCell(at: indexPath)
@@ -57,10 +53,18 @@ extension MainViewController: UITableViewDataSource {
     }
 }
 
-//MARK: - UITableViewDataSource
+//MARK: - UITableViewDelegate
 extension MainViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let viewModel = viewModel, indexPath.row > viewModel.posts.count - 5 else {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        viewModel?.heightForRow(at: indexPath.row, for: UIScreen.main.bounds.width) ?? 0
+    }
+}
+
+//MARK: - UITableViewDataSourcePrefetching
+extension MainViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        guard let viewModel = viewModel,
+              indexPaths.contains(where: { $0.row > (viewModel.posts.count - 5) }) else {
             return
         }
 
@@ -71,7 +75,6 @@ extension MainViewController: UITableViewDelegate {
 //MARK: - MainViewControllerViewModelDelegate
 extension MainViewController: MainViewControllerViewModelDelegate {
     func postsReloaded() {
-        print("reload")
         currentNumberOfRows = viewModel?.posts.count ?? 0
         DispatchQueue.main.async {
             self.refreshControl.endRefreshing()
@@ -80,7 +83,6 @@ extension MainViewController: MainViewControllerViewModelDelegate {
     }
 
     func addedPosts() {
-        print("uppended")
         guard let newRowsNumber = viewModel?.posts.count else {
             return
         }
@@ -134,5 +136,4 @@ extension MainViewController: MainTableViewCellDelegate {
             self.present(action, animated: true)
         }
     }
-
 }

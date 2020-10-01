@@ -27,6 +27,7 @@
                                 <connections>
                                     <outlet property="dataSource" destination="FaO-Z7-BVs" id="9Kk-PN-w7a"/>
                                     <outlet property="delegate" destination="FaO-Z7-BVs" id="rny-ew-QaK"/>
+                                    <outlet property="prefetchDataSource" destination="FaO-Z7-BVs" id="vhx-Kb-vxO"/>
                                 </connections>
                             </tableView>
                         </subviews>

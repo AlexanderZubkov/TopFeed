@@ -129,18 +129,18 @@
 		1139D6B2252487AA0015D718 /* TopFeed */ = {
 			isa = PBXGroup;
 			children = (
+				11DF946125261ED5002AA19F /* Reused */,
+				11A60F4D25261636005A3DEA /* API */,
 				1139D7232524F1DE0015D718 /* Coordinator */,
 				1139D70A2524BFB80015D718 /* Extensions */,
 				1139D6EF25248D1B0015D718 /* Main */,
+				1139D7242524F20E0015D718 /* Constants.swift */,
 				1139D6B3252487AA0015D718 /* AppDelegate.swift */,
 				1139D6B5252487AA0015D718 /* SceneDelegate.swift */,
 				1139D6BF252487AC0015D718 /* Assets.xcassets */,
 				1139D6C1252487AC0015D718 /* LaunchScreen.storyboard */,
 				1139D6C4252487AC0015D718 /* Info.plist */,
 				1139D6BC252487AA0015D718 /* TopFeed.xcdatamodeld */,
-				1139D7242524F20E0015D718 /* Constants.swift */,
-				1139D7292524F7C10015D718 /* APIClient.swift */,
-				114957AE25250BFD009AB1C4 /* CacheableImageView.swift */,
 			);
 			path = TopFeed;
 			sourceTree = "<group>";
@@ -235,6 +235,22 @@
 				114957A3252503AE009AB1C4 /* MainTableViewCell.xib */,
 			);
 			path = TableViewCell;
+			sourceTree = "<group>";
+		};
+		11A60F4D25261636005A3DEA /* API */ = {
+			isa = PBXGroup;
+			children = (
+				1139D7292524F7C10015D718 /* APIClient.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		11DF946125261ED5002AA19F /* Reused */ = {
+			isa = PBXGroup;
+			children = (
+				114957AE25250BFD009AB1C4 /* CacheableImageView.swift */,
+			);
+			path = Reused;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
