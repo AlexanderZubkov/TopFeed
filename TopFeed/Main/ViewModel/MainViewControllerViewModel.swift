@@ -59,7 +59,6 @@ class MainViewControllerViewModel {
         }
 
         isLoading = true
-        print("load more to \(posts.count)")
         client.loadPosts(after: lastPost.name) { [weak self] (result) in
             guard let self = self else {
                 return

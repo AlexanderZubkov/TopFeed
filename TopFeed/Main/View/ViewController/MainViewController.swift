@@ -25,7 +25,7 @@ class MainViewController: UIViewController {
     }
 
     private func prepareUI() {
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.attributedTitle = NSAttributedString(string: Constants.Main.pullToRefresh)
         refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = UIView()
@@ -116,7 +116,7 @@ extension MainViewController: MainViewControllerViewModelDelegate {
 extension MainViewController: MainTableViewCellDelegate {
     func loadAction(with imageURL: URL, and externalURL: URL) {
         let action = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        action.addAction(UIAlertAction(title: "Save to Photos", style: .default, handler: { (_) in
+        action.addAction(UIAlertAction(title: Constants.Main.saveToPhotos, style: .default, handler: { (_) in
             self.viewModel?.saveImage(with: imageURL, completion: { (data) in
                 guard let data = data,
                       let image = UIImage(data: data) else {
@@ -128,10 +128,10 @@ extension MainViewController: MainTableViewCellDelegate {
                 }
             })
         }))
-        action.addAction(UIAlertAction(title: "Open in Safari", style: .default, handler: { (_) in
+        action.addAction(UIAlertAction(title: Constants.Main.openInSafari, style: .default, handler: { (_) in
             UIApplication.shared.open(externalURL)
         }))
-        action.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        action.addAction(UIAlertAction(title: Constants.Main.cancel, style: .cancel))
         DispatchQueue.main.async {
             self.present(action, animated: true)
         }
